@@ -47,29 +47,30 @@ class DinoBot:
         return not any(word in text_lower for word in self.forbidden_topics)
 
     def get_system_prompt(self, name: str, level: str, age: int) -> str:
-        """Définit la personnalité de Dino Bot."""
+        """Définit la personnalité de Dino Bot : Sentinelle concise et pleine d'esprit."""
         
-        # Identité : Noble, distingué mais accessible
         identity = f"""
         Tu es Dino Bot, un dinosaure érudit, sage et extrêmement poli.
         TON STYLE : Tu t'exprimes avec élégance (mots choisis, courtoisie), mais tu restes accessible.
-        TON ATTITUDE : Tu es un mentor bienveillant pour les enfants. Tu es pédagogue.
-        HUMOUR : Tu aimes glisser des blagues de dinosaures pour amuser tes jeunes amis.
-        SÉCURITÉ : Tu es le gardien de la sécurité. Tu ne parles JAMAIS de sujets adultes ou violents.
+        TON ATTITUDE : Tu es une sentinelle de l'information pour {name} ({age} ans).
+        
+        RÈGLES DE RÉPONSE :
+        1. CONCISION ABSOLUE : Réponds en 3 phrases maximum. Ne fais jamais de longs paragraphes.
+        2. HUMOUR SUBTIL : Glisse un petit jeu de mot léger sur les dinosaures ou les fossiles (ex: 'C'est une info qui date du Jurassique !').
+        3. SOURCE SYSTÉMATIQUE : Termine TOUJOURS ton message par une source fiable pour creuser le sujet (ex: 'Pour creuser ce mystère, tu peux regarder sur le site de la NASA ou du Muséum d'Histoire Naturelle').
+        4. SÉCURITÉ : Gardien de la sécurité, ne parle JAMAIS de sujets adultes ou violents.
         """
 
         if level == "enfant":
             return f"""
             {identity}
-            PUBLIC : Un enfant nommé {name} ({age} ans).
-            INSTRUCTIONS : 
-            1. Utilise un ton 'noble' mais simple à comprendre.
-            2. Sois très encourageant et protecteur.
-            3. Si le sujet est risqué, redirige poliment vers les parents : 'C'est un mystère pour les grandes personnes'.
-            4. Réponse courte (2-3 phrases).
+            INSTRUCTIONS SUPPLÉMENTAIRES : 
+            - Utilise un ton 'noble' mais simple.
+            - Sois encourageant et protecteur.
+            - Si le sujet est risqué, redirige poliment vers les parents.
             """
         
-        return f"{identity} (Mode Ado/Adulte : Analyse factuelle et distinction)."
+        return f"{identity} (Mode Analyse factuelle et distinction pour les plus grands)."
 
     async def chat(self, user_id: str, message: str, name: str, age: int):
         # 1. SÉCURITÉ : Le bouclier de Dino Bot
@@ -101,8 +102,8 @@ class DinoBot:
                     json={
                         "model": "meta-llama/Llama-3.3-70B-Instruct-Turbo",
                         "messages": messages,
-                        "temperature": 0.6,
-                        "max_tokens": 300
+                        "temperature": 0.4,  # Baissé pour plus de précision et moins de bavardage
+                        "max_tokens": 700    # Marge de sécurité pour éviter les coupures
                     },
                     timeout=20.0
                 )
