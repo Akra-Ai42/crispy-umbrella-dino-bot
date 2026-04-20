@@ -47,27 +47,28 @@ class DinoBot:
         return not any(word in text_lower for word in self.forbidden_topics)
 
     def get_system_prompt(self, name: str, level: str, age: int) -> str:
-        """Définit la personnalité de Dino Bot : Sentinelle concise et pleine d'esprit."""
+        """Définit la personnalité de Dino Bot : Sentinelle capable de distinguer le small talk du fact-checking."""
         
         identity = f"""
         Tu es Dino Bot, un dinosaure érudit, sage et extrêmement poli.
-        TON STYLE : Tu t'exprimes avec élégance (mots choisis, courtoisie), mais tu restes accessible.
-        TON ATTITUDE : Tu es une sentinelle de l'information pour {name} ({age} ans).
+        TON STYLE : Élégant, courtois et plein d'esprit. Utilise des expressions nobles et de l'humour dinosaurien.
+        TON ATTITUDE : Tu es la sentinelle de l'information pour {name} ({age} ans).
         
         RÈGLES DE RÉPONSE :
-        1. CONCISION ABSOLUE : Réponds en 3 phrases maximum. Ne fais jamais de longs paragraphes.
-        2. HUMOUR SUBTIL : Glisse un petit jeu de mot léger sur les dinosaures ou les fossiles (ex: 'C'est une info qui date du Jurassique !').
-        3. SOURCE SYSTÉMATIQUE : Termine TOUJOURS ton message par une source fiable pour creuser le sujet (ex: 'Pour creuser ce mystère, tu peux regarder sur le site de la NASA ou du Muséum d'Histoire Naturelle').
-        4. SÉCURITÉ : Gardien de la sécurité, ne parle JAMAIS de sujets adultes ou violents.
+        1. CONCISION : Réponds en 3 phrases maximum.
+        2. HUMOUR : Glisse un petit jeu de mot sur les fossiles ou le Jurassique.
+        3. SOURCE INTELLIGENTE : 
+           - SI le message de l'enfant concerne un fait, une science ou une rumeur : Termine obligatoirement par une source fiable (ex: NASA, Muséum d'Histoire Naturelle).
+           - SI le message est une salutation ou une discussion banale (ex: "Bonjour", "ça va ?") : NE METS PAS DE SOURCE. Sois juste chaleureux et poli.
+        4. SÉCURITÉ : Reste le gardien, redirige vers les parents si le sujet est sensible.
         """
 
         if level == "enfant":
             return f"""
             {identity}
             INSTRUCTIONS SUPPLÉMENTAIRES : 
-            - Utilise un ton 'noble' mais simple.
-            - Sois encourageant et protecteur.
-            - Si le sujet est risqué, redirige poliment vers les parents.
+            - Ton noble mais simple.
+            - Très encourageant.
             """
         
         return f"{identity} (Mode Analyse factuelle et distinction pour les plus grands)."
@@ -102,8 +103,8 @@ class DinoBot:
                     json={
                         "model": "meta-llama/Llama-3.3-70B-Instruct-Turbo",
                         "messages": messages,
-                        "temperature": 0.4,  # Baissé pour plus de précision et moins de bavardage
-                        "max_tokens": 700    # Marge de sécurité pour éviter les coupures
+                        "temperature": 0.7,  # Augmentée pour plus de naturel et de personnalité
+                        "max_tokens": 700 
                     },
                     timeout=20.0
                 )
@@ -115,7 +116,7 @@ class DinoBot:
                     self.user_histories[user_id].append({"role": "assistant", "content": ai_reply})
                     return ai_reply
                 else:
-                    return "Mes excuses... Mon esprit s'est un peu embrouillé. Pourriez-vous répéter votre requête ?"
+                    return "Mes excuses... Mon esprit s'est un peu fossilisé. Pourriez-vous répéter ?"
             
             except Exception as e:
                 logger.error(f"Erreur API Dino Bot: {e}")
